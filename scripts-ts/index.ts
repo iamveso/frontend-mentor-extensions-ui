@@ -15,6 +15,7 @@ const inactiveClass = "tab-inactive"
 const hideCardClass = "hide-card"
 const fadeOutClass = "fade-out"
 
+
 const moonIcon = document.querySelector(".moon-icon") as HTMLElement
 
 if(moonIcon) {
