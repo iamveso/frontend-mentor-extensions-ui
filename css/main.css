@@ -138,10 +138,6 @@ body.dark-mode .tab-active {
     opacity: 0.4;
 }
 
-body.dark-mode .tab-inactive:hover {
-    border: var(--red-500) 1px solid;
-}
-
 .card-container {
     display: flex;
     flex-direction: column;
