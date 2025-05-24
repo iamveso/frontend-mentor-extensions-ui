@@ -30,40 +30,38 @@ if(moonIcon) {
     })
 }
 
-const cardHtml = (data: JsonData, buttonid: string) => {
-    const isChecked = data.isActive ? "checked" : ""
-    return (
-        `
-            <div class="card-top-section">
-                <img src=${data.logo} alt="card-icon" srcset="">
-                <div class="card-text">
-                    <h3>${data.name}</h3>
-                    <p>${data.description}</p>
-                </div>
-            </div>
-            <div class="card-bottom-section">
-                <button class="card-remove-btn" data-card-id="${buttonid}">Remove</button>
-                <label class="toggle">
-                    <input type="checkbox" class="toggle-input" ${isChecked}/>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>`)
+const createCard = (data: JsonData, buttonid: string) => {
+    try {
+        const cardContainer = document.getElementById('card-container')!
+        const cardTemplate = document.getElementById('card-template')! as HTMLTemplateElement
+        
+        const card = cardTemplate.content.cloneNode(true) as DocumentFragment
+        const cardContainerDiv = card.querySelector(".card")!
+        cardContainerDiv.id = buttonid
+        const logoImg = card.querySelector("img")!
+        const heading = card.querySelector("h3")!
+        const description = card.querySelector("p")!
+        const removeButton = card.querySelector('.card-remove-btn')!
+        const toggleInput = card.querySelector('.toggle-input')! as HTMLInputElement
+
+        logoImg.src = data.logo
+        logoImg.alt = `${data.name} icon`
+        heading.textContent = data.name
+        description.textContent = data.description
+        removeButton.setAttribute('data-card-id', buttonid)
+        toggleInput.checked = data.isActive
+        cardContainer.appendChild(card)
+        cardDataMap[cardContainerDiv.id] = data
+    } catch (error) {
+        console.log("error cloning template: ", error)
+    }
 }
 
 fetch("data.json")
     .then(response => response.json())
     .then((data: Array<JsonData>) => {
-        const container = document.getElementById("card-container")
-        if (!container) {
-            throw new Error("document with card-container id not found")
-        }
         data.forEach((element, index) => {
-            const card = document.createElement("div")
-            card.classList.add("card")
-            card.id = `card-${index}`
-            cardDataMap[card.id] = element
-            card.innerHTML = cardHtml(element, card.id)
-            container.appendChild(card)
+            createCard(element, `card-${index}`)
         });
     })
     .catch((e) => {
